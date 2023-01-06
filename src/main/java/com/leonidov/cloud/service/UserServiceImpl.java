@@ -5,7 +5,6 @@ import com.leonidov.cloud.dao.UserRepo;
 import com.leonidov.cloud.model.Role;
 import com.leonidov.cloud.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getUserByUsername(String username) {
-        return userRepo.getUserByUsername(username);
+        Optional<User> o = userRepo.getUserByUsername(username);
+        if (o.isPresent()) {
+            return o;
+        } else {
+            throw new UsernameNotFoundException("Username not found");
+        }
     }
 
     public boolean save(User user) {
@@ -36,10 +40,22 @@ public class UserServiceImpl implements UserService {
         if (userFromDB.isPresent()) {
             return false;
         } else {
-            user.setRole(Role.valueOf(Role.USER.toString()));
+            user.setRole(Role.valueOf(Role.ROLE_USER.toString()));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepo.save(user);
             return true;
+        }
+    }
+
+    @Override
+    public User getUserByUsernameAndPassword(String username, String password) {
+        Optional<User> o = userRepo.getUserByUsername(username);
+        System.out.println(passwordEncoder.matches(password, o.get().getPassword()));
+        if (passwordEncoder.matches(password, o.get().getPassword())) {
+            return o.get();
+        } else {
+            System.out.println("Хуита");
+            throw new UsernameNotFoundException("");
         }
     }
 
