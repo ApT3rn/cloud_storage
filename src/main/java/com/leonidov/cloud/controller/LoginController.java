@@ -38,18 +38,11 @@ public class LoginController {
     public String loginUser(@RequestParam String username,
                             @RequestParam String password) {
         Optional<User> user = userService.getUserByUsername(username);
-
-        if (user.isPresent()) {
-            if (user.get().getPassword().equals(password)) {
-                userDetailsService.loadUserByUsername(username);
-            } else {
-                System.out.println("Пароль не правильный");
-                return "login";
-            }
+        if (user.get().getPassword().equals(password)) {
+            userDetailsService.loadUserByUsername(username);
+            return "user";
         } else {
-            System.out.println("Данный пользователь не существует");
-            throw new UsernameNotFoundException("");
+            throw new UsernameNotFoundException("Password wrong");
         }
-        return "user";
     }
 }

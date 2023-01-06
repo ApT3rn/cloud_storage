@@ -34,9 +34,9 @@ public class User {
     @Email(message = "Не верный формат электронной почты")
     private String username;
 
-    @Column(name = "password", length = 32)
+    @Column(name = "password")
     @NotBlank(message = "Поле не должно быть пустым")
-    @Size(min = 8, max = 32, message = "Длина пароля должна составлять от 8 до 32 символов")
+    //@Size(min = 8, max = 32, message = "Длина пароля должна составлять от 8 до 32 символов")
     private String password;
 
     @Column(name = "role")
