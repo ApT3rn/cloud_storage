@@ -5,13 +5,14 @@ import com.leonidov.cloud.dao.UserRepo;
 import com.leonidov.cloud.model.Role;
 import com.leonidov.cloud.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,14 +27,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserByUsername(String username) {
-        return userRepo.getUserByUsername(username);
+    public Optional<User> getUserByEmail(String email) {
+        return userRepo.getUserByEmail(email);
     }
 
     public boolean save(User user) {
-        Optional<User> userFromDB = userRepo.getUserByUsername(user.getUsername());
+        Optional<User> o = userRepo.getUserByEmail(user.getEmail());
 
-        if (userFromDB.isPresent()) {
+        if (o.isPresent()) {
             return false;
         } else {
             user.setRole(Role.valueOf(Role.ROLE_USER.toString()));
@@ -44,24 +45,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsernameAndPassword(String username, String password) {
-        Optional<User> o = userRepo.getUserByUsername(username);
-        System.out.println(passwordEncoder.matches(password, o.get().getPassword()));
-        if (passwordEncoder.matches(password, o.get().getPassword())) {
-            return o.get();
-        } else {
-            System.out.println("Хуита");
-            throw new UsernameNotFoundException("");
-        }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepo.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepo.getUserByEmail(email);
         if (user.isPresent()) {
             return new AuthUser(user.get());
         } else {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException(format("Пользователь: %s, не найден", email));
         }
     }
 }

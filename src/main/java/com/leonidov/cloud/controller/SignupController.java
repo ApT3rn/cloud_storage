@@ -3,7 +3,6 @@ package com.leonidov.cloud.controller;
 import com.leonidov.cloud.model.User;
 import com.leonidov.cloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/signup")
@@ -32,7 +30,7 @@ public class SignupController {
     /*
     Метод регистрации пользователя, он проверяет базу данных на наличия пользователя
     по данному email, если пользователя с таким email не существует, он его зарегистрирует,
-    а если существует пользователь с таким email, он выведет ошибку.
+    а если существует пользователь с таким email, он отдаст ответ пользователю.
      */
     @PostMapping
     public String signupUser(@Valid @ModelAttribute(name = "user") User user) {

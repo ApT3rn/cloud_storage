@@ -3,16 +3,12 @@ package com.leonidov.cloud.model;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users",
 uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username")
+        @UniqueConstraint(columnNames = "email")
 })
 public class User {
 
@@ -29,10 +25,10 @@ public class User {
     @NotBlank(message = "Поле не заполнено")
     private String surname;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "email", unique = true)
     @NotBlank(message = "Поле не заполнено")
     @Email(message = "Не верный формат электронной почты")
-    private String username;
+    private String email;
 
     @Column(name = "password")
     @NotBlank(message = "Поле не должно быть пустым")
@@ -46,10 +42,10 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, String username, String password, Role role) {
+    public User(String name, String surname, String email, String password, Role role) {
         this.name = name;
         this.surname = surname;
-        this.username = username;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
@@ -78,12 +74,12 @@ public class User {
         this.surname = surname;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -108,7 +104,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
@@ -119,11 +115,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && role == user.role;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, username, password, role);
+        return Objects.hash(id, name, surname, email, password, role);
     }
 }
