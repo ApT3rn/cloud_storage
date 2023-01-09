@@ -5,6 +5,7 @@ import com.leonidov.cloud.dao.UserRepo;
 import com.leonidov.cloud.model.Role;
 import com.leonidov.cloud.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,12 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getUserByUsername(String username) {
-        Optional<User> o = userRepo.getUserByUsername(username);
-        if (o.isPresent()) {
-            return o;
-        } else {
-            throw new UsernameNotFoundException("Username not found");
-        }
+        return userRepo.getUserByUsername(username);
     }
 
     public boolean save(User user) {

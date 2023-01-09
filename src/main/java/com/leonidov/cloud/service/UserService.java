@@ -1,6 +1,7 @@
 package com.leonidov.cloud.service;
 
 import com.leonidov.cloud.model.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
