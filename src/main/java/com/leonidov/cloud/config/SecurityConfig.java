@@ -30,16 +30,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/user").hasAnyRole("USER", "MODERATOR", "ADMIN")
-                    .antMatchers("/", "/forget", "/login", "/signup").permitAll()
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/login", "/signup", "/forget").permitAll()
                 .anyRequest().authenticated();
         http
                 .formLogin()
                     .loginPage("/login")
                     .usernameParameter("email")
                     .passwordParameter("password")
+                    .failureUrl("/login?error=true")
                     .defaultSuccessUrl("/user", true)
                 .and()
-                    .logout().permitAll();
+                    .logout()
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                .permitAll();
     }
 
     @Override

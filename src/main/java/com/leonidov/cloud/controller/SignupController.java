@@ -1,5 +1,6 @@
 package com.leonidov.cloud.controller;
 
+import com.leonidov.cloud.config.CheckAuthenticated;
 import com.leonidov.cloud.model.User;
 import com.leonidov.cloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import javax.validation.Valid;
 public class SignupController {
 
     private final UserService userService;
+    private CheckAuthenticated check =
+            new CheckAuthenticated();
 
     @Autowired
     public SignupController(UserService userService) {
@@ -24,6 +27,9 @@ public class SignupController {
 
     @GetMapping
     public String signupPage(@ModelAttribute(name = "user") User user) {
+        if (check.isAuthenticated()) {
+            return "redirect:/user";
+        }
         return "signup";
     }
 
@@ -36,7 +42,7 @@ public class SignupController {
     public String signupUser(@Valid @ModelAttribute(name = "user") User user) {
         boolean success = userService.save(user);
         if (success) {
-            return "user";
+            return "redirect:/user";
         } else {
             System.out.println("Данная электронная почта уже зарегистрирована!");
             return "signup";

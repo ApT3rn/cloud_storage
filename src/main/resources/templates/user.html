@@ -15,16 +15,30 @@
         <a th:href="@{/}" class="logo"><img th:src="@{/images/logo.png}" width="250px"></a>
 
         <form th:action="@{/logout}" class="head_btn" method="post">
-            <input type="submit" value="Выйти"/>
+            <input type="submit" value="Выйти из аккаунта"/>
         </form>
     </div>
 
     <div class="content">
+        <div class="search">
+            <input class="search_field" type="text" value="" placeholder="Введите текст">
+        </div>
 
+        <div class="button-bar">
+            <form class="buttons">
+                <tr>
+                    <a><th>Создать файл</th></a>
+                    <a><th>Создать папку</th></a>
+                    <a><th>Загрузить</th></a>
+                    <a><th>Удалить</th></a>
+                </tr>
+            </form>
+        </div>
+        <div class="list_files">
+            <br><br>
 
-
+        </div>
     </div>
-
 </div>
 
 <div class="footer">

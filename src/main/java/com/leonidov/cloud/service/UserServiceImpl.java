@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -19,11 +20,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
     @Autowired
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FileService fileService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
     }
 
     @Override
@@ -32,23 +35,34 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean save(User user) {
+        fileService.createMainFolder();
         Optional<User> o = userRepo.getUserByEmail(user.getEmail());
-
         if (o.isPresent()) {
             return false;
         } else {
             user.setRole(Role.valueOf(Role.ROLE_USER.toString()));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            fileService.createUserFolder(user.getEmail());
             userRepo.save(user);
             return true;
         }
     }
 
+    public boolean flush(@NotNull User user) {
+        Optional<User> o = userRepo.getUserByEmail(user.getEmail());
+        if (o.isPresent()) {
+            userRepo.saveAndFlush(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepo.getUserByEmail(email);
-        if (user.isPresent()) {
-            return new AuthUser(user.get());
+        Optional<User> o = userRepo.getUserByEmail(email);
+        if (o.isPresent()) {
+            return new AuthUser(o.get());
         } else {
             throw new UsernameNotFoundException(format("Пользователь: %s, не найден", email));
         }

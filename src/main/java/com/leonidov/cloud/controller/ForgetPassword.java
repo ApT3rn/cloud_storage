@@ -1,5 +1,6 @@
 package com.leonidov.cloud.controller;
 
+import com.leonidov.cloud.config.CheckAuthenticated;
 import com.leonidov.cloud.model.User;
 import com.leonidov.cloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Optional;
 public class ForgetPassword {
 
     private final UserService userService;
+    private CheckAuthenticated check =
+            new CheckAuthenticated();
 
     @Autowired
     public ForgetPassword(UserService userService) {
@@ -24,6 +27,9 @@ public class ForgetPassword {
 
     @GetMapping
     public String forgetPage() {
+        if (check.isAuthenticated()) {
+            return "redirect:/user";
+        }
         return "forget";
     }
 
